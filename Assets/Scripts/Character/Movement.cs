@@ -23,7 +23,7 @@ public class Movement : MonoBehaviour
 
     void Update()
     {
-        Debug.Log(_rb.velocity.x);
+        //Debug.Log("Velocity: " + _rb.velocity.x);
         Move();
         CheckGround();
         if (Input.GetKeyDown(KeyCode.Space))
@@ -78,7 +78,6 @@ public class Movement : MonoBehaviour
     }
     private void Jump()
     {
-        Debug.Log("Jump");
         _rb.AddForce(Vector2.up * _jumpForce, ForceMode2D.Impulse);
     }
 }
