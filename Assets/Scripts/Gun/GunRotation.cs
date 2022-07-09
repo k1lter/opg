@@ -4,6 +4,7 @@ using UnityEngine;
 //Вроде как этот скрипт можно упростить, но это потом 
 public class GunRotation : MonoBehaviour
 {
+    private SceneChange _pause;
     private enum Side
     {
         Left = -1,
@@ -27,10 +28,13 @@ public class GunRotation : MonoBehaviour
 
     private void Update()
     {
-        Debug.Log(gameObject.name);
-        float z = GetRotate();
-        _transform.rotation = Quaternion.Euler(0, 0, z);
-        flipSprite();
+        _pause = GameObject.Find("SceneChange").GetComponent<SceneChange>();
+        if (!_pause.pause)
+        {
+            float z = GetRotate();
+            _transform.rotation = Quaternion.Euler(0, 0, z);
+            flipSprite();
+        }
     }
 
     private void flipSprite()
@@ -46,7 +50,14 @@ public class GunRotation : MonoBehaviour
         }
         else if (gameObject.name == "EnemyGun(Clone)")
         {
-            _two = GameObject.Find("Player").transform.position - _transform.position;
+            if (GameObject.Find("Player") != null)
+            {
+                _two = GameObject.Find("Player").transform.position - _transform.position;
+            }
+            else
+            {
+                _two = Vector2.right;
+            }
         }
         float scalarResult = _one.x * _two.x + _one.y * _two.y;
         float absResult = _one.magnitude * _two.magnitude;

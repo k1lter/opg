@@ -21,7 +21,6 @@ public class Movement : MonoBehaviour
 
     void Update()
     {
-        //Debug.Log("Velocity: " + _rb.velocity.x);
         Move();
         CheckGround();
         if (Input.GetKeyDown(KeyCode.Space))

@@ -14,9 +14,19 @@ public class Disappear : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (!collision.gameObject.CompareTag("Player") && !collision.gameObject.CompareTag("Bullet") && !collision.gameObject.CompareTag("Enemy"))
+        if (gameObject.name == "flame_test(Clone)")
         {
-            Destroy(gameObject);
+            if (!collision.gameObject.CompareTag("Player") && !collision.gameObject.CompareTag("Bullet"))
+            {
+                Destroy(gameObject);
+            }
+        }
+        else if (gameObject.name == "enemy_flame_test(Clone)")
+        {
+            if (!collision.gameObject.CompareTag("Enemy") && !collision.gameObject.CompareTag("Bullet"))
+            {
+                Destroy(gameObject);
+            }
         }
     }
 }
