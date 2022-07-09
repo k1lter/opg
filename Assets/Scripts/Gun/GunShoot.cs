@@ -25,17 +25,30 @@ public class GunShoot : MonoBehaviour
     void Update()
     {
         timeLeft -= Time.deltaTime;
-        if (Input.GetKey(KeyCode.Mouse0) && timeLeft < 0 && ammo > 0)
+        if (gameObject.name == "Gun(Clone)") //Стрельба для игрока
         {
-            Shoot();
-            ammo -= 1;
-            ammo_bar.text = "Ammo: " + ammo;
-            timeLeft = 0.2f;
+            if (Input.GetKey(KeyCode.Mouse0) && timeLeft < 0 && ammo > 0)
+            {
+                Shoot();
+                ammo -= 1;
+                ammo_bar.text = "Ammo: " + ammo;
+                timeLeft = 0.2f;
+            }
+            else if (Input.GetKey(KeyCode.Mouse0) && ammo == 0)
+            {
+                noAmmo.Play();
+            }
         }
-        else if(Input.GetKey(KeyCode.Mouse0)  && ammo == 0)
+        else if(gameObject.name == "EnemyGun(Clone)") //Стрельба для противника
         {
-            noAmmo.Play();
+            if (timeLeft < 0 && ammo > 0)
+            {
+                Shoot();
+                ammo -= 1;
+                timeLeft = 0.2f;
+            }
         }
+
     }
 
     private void Shoot()

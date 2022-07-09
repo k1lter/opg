@@ -27,6 +27,7 @@ public class GunRotation : MonoBehaviour
 
     private void Update()
     {
+        Debug.Log(gameObject.name);
         float z = GetRotate();
         _transform.rotation = Quaternion.Euler(0, 0, z);
         flipSprite();
@@ -39,7 +40,14 @@ public class GunRotation : MonoBehaviour
 
     private float GetRotate() //Функция выводит угол между горизонтом и курсором
     {
-        _two = _camera.ScreenToWorldPoint(Input.mousePosition) - _transform.position;
+        if (gameObject.name == "Gun(Clone)")
+        {
+            _two = _camera.ScreenToWorldPoint(Input.mousePosition) - _transform.position;
+        }
+        else if (gameObject.name == "EnemyGun(Clone)")
+        {
+            _two = GameObject.Find("Player").transform.position - _transform.position;
+        }
         float scalarResult = _one.x * _two.x + _one.y * _two.y;
         float absResult = _one.magnitude * _two.magnitude;
         float divition = scalarResult / absResult;

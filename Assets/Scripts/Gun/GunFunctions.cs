@@ -22,10 +22,15 @@ public class GunFunctions : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.gameObject.CompareTag("Gun"))
+        if (collision.gameObject.CompareTag("Gun") && gameObject.CompareTag("Player"))
         {
             Destroy(collision.gameObject);
             gun = Instantiate(Resources.Load("Prefabs/Weapons/Gun")) as GameObject;
+        }
+        else if (collision.gameObject.CompareTag("Gun") && gameObject.CompareTag("Enemy"))
+        {
+            Destroy(collision.gameObject);
+            gun = Instantiate(Resources.Load("Prefabs/Weapons/EnemyGun")) as GameObject;
         }
     }
 }
