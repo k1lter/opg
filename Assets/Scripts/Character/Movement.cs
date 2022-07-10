@@ -2,8 +2,8 @@ using UnityEngine;
 
 public class Movement : MonoBehaviour
 {
-    [SerializeField] private float _speed;
-    [SerializeField] private float _jumpForce;
+    [SerializeField] public float _speed;
+    [SerializeField] public float _jumpForce;
     [SerializeField] private Vector3 _groundCheckOffset;
     private Rigidbody2D _rb;
     private Vector3 _direction;
@@ -11,6 +11,7 @@ public class Movement : MonoBehaviour
     public bool _isGrounded;
     private CharacterAnimations _animations;
     [SerializeField] private SpriteRenderer _characterSprite;
+    private SceneChange _pause;
 
 
     void Start()
@@ -21,14 +22,18 @@ public class Movement : MonoBehaviour
 
     void Update()
     {
-        Move();
-        CheckGround();
-        if (Input.GetKeyDown(KeyCode.Space))
+        _pause = GameObject.Find("SceneChange").GetComponent<SceneChange>();
+        if (!_pause.pause)
         {
-            if (_isGrounded)
+            Move();
+            CheckGround();
+            if (Input.GetKeyDown(KeyCode.Space))
             {
-                Jump();
-                _animations.Jump();
+                if (_isGrounded)
+                {
+                    Jump();
+                    _animations.Jump();
+                }
             }
         }
     }

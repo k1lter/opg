@@ -11,7 +11,7 @@ public class GunShoot : MonoBehaviour
     public AudioSource shootSound;
     public AudioSource noAmmo;
     public Text ammo_bar;
-    private float timeLeft = 0;
+    public float timeLeft = 0, timer = 0.5f;
     private SceneChange _pause;
 
     void Start()
@@ -37,7 +37,7 @@ public class GunShoot : MonoBehaviour
                     Shoot();
                     ammo -= 1;
                     ammo_bar.text = "Ammo: " + ammo;
-                    timeLeft = 0.2f;
+                    timeLeft = timer;
                 }
                 else if (Input.GetKey(KeyCode.Mouse0) && ammo == 0)
                 {

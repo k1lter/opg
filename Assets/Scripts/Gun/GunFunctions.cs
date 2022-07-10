@@ -8,11 +8,14 @@ public class GunFunctions : MonoBehaviour
     private Text ammo_bar;
     private GameObject gun_item;
     private SceneChange _pause;
+    private bool pickGun;
+    private Collider2D destroyGun;
 
     void Start()
     {
         _gunPosOffset = new(0.04f, -0.27f, -1);
         gun_item = Resources.Load("Prefabs/Weapons/Gun_item") as GameObject;
+        pickGun = false;
     }
 
     void Update()
@@ -29,14 +32,27 @@ public class GunFunctions : MonoBehaviour
                 }
             }
         }
+        if(pickGun == true && Input.GetKeyDown(KeyCode.E))
+        {
+            PickGun(destroyGun);
+        }
+    }
+
+    private void PickGun(Collider2D collision)
+    {
+        if (gun == null)
+        {
+            Destroy(collision.gameObject);
+            gun = Instantiate(Resources.Load("Prefabs/Weapons/Gun")) as GameObject;
+        }
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.gameObject.CompareTag("Gun") && gameObject.CompareTag("Player"))
         {
-            Destroy(collision.gameObject);
-            gun = Instantiate(Resources.Load("Prefabs/Weapons/Gun")) as GameObject;
+            pickGun = true;
+            destroyGun = collision;
         }
         else if (collision.gameObject.CompareTag("Gun") && gameObject.CompareTag("Enemy"))
         {
@@ -44,13 +60,20 @@ public class GunFunctions : MonoBehaviour
             gun = Instantiate(Resources.Load("Prefabs/Weapons/EnemyGun")) as GameObject;
         }
     }
+
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        if (collision.gameObject.CompareTag("Gun") && gameObject.CompareTag("Player"))
+        {
+            pickGun = false;
+        }
+    }
     private void DropGun()
     {
-        Vector3 err = new Vector3(2, 0, 0);
         Destroy(GameObject.Find("Gun(Clone)"));
-        GameObject _gun_item = Instantiate(gun_item, gameObject.transform.position + err, Quaternion.identity);
+        GameObject _gun_item = Instantiate(gun_item, gameObject.transform.position, Quaternion.identity);
         Rigidbody2D _girb = _gun_item.GetComponent<Rigidbody2D>();
-        _girb.AddForce(gameObject.transform.right * 2, ForceMode2D.Impulse);
+        _girb.AddForce(gameObject.transform.right * 4, ForceMode2D.Impulse);
         ammo_bar = GameObject.Find("Ammo").GetComponent<Text>();
         ammo_bar.text = "Ammo: ?";
         gun = null;
