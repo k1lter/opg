@@ -3,6 +3,7 @@ using UnityEngine.UI;
 
 public class CharStats : MonoBehaviour
 {
+    public int id;
     public bool speed, jump, shoot;
     [SerializeField] int hp, armor;
     private Text hp_bar, armor_bar;
@@ -12,14 +13,16 @@ public class CharStats : MonoBehaviour
     private GunShoot player_gun;
     public AudioClip audioPickUp;
     private AudioSource audioSource;
+    public GameObject active_gun;
 
     void Start()
     {
+        id = 0;
         hp_bar = GameObject.Find("health").GetComponent<Text>();
         armor_bar = GameObject.Find("Armor").GetComponent<Text>();
         audioSource = GetComponent<AudioSource>();
         player_stats = gameObject.GetComponent<Movement>();
-        hp = 50;
+        hp = 10;
         armor = 0;
         hp_bar.text = "Health: " + hp;
         armor_bar.text = "Armor: " + armor;
@@ -37,7 +40,7 @@ public class CharStats : MonoBehaviour
         {
             player_stats._jumpForce = 8;
         }
-        if(shoot)
+        if(shoot) //Не работает
         {
             if (GameObject.Find("Gun(Clone)") != null)
             {
@@ -50,14 +53,7 @@ public class CharStats : MonoBehaviour
         {
             Debug.Log("Blin, ya umer(");
             Destroy(gameObject);
-            if(gameObject.name == "Enemy")
-            {
-                Destroy(GameObject.Find("EnemyGun(Clone)")); //Пусть пока так будет, но надо исправить
-            }
-            else if (gameObject.name == "Player")
-            {
-                Destroy(GameObject.Find("Gun(Clone)")); //Пусть пока так будет, но надо исправить
-            }
+            Destroy(active_gun); //Пусть пока так будет, но надо исправить
         }
         if (Input.GetKeyDown(KeyCode.E) && pickUp == true)
         {

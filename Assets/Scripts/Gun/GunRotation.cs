@@ -15,6 +15,7 @@ public class GunRotation : MonoBehaviour
     [SerializeField] private SpriteRenderer _gunSprite;
     private Vector2 _one;
     private Vector2 _two;
+    private Vector3 gun_offset = new(0, -0.25f, -1);
     private Transform _transform;
 
     private Camera _camera;
@@ -29,6 +30,7 @@ public class GunRotation : MonoBehaviour
     private void Update()
     {
         _pause = GameObject.Find("SceneChange").GetComponent<SceneChange>();
+        transform.position = GameObject.FindGameObjectWithTag("Player").transform.position + gun_offset;
         if (!_pause.pause)
         {
             float z = GetRotate();
@@ -44,20 +46,9 @@ public class GunRotation : MonoBehaviour
 
     private float GetRotate() //Функция выводит угол между горизонтом и курсором
     {
-        if (gameObject.name == "Gun(Clone)")
+        if (gameObject.name == "Pistol")
         {
             _two = _camera.ScreenToWorldPoint(Input.mousePosition) - _transform.position;
-        }
-        else if (gameObject.name == "EnemyGun(Clone)")
-        {
-            if (GameObject.Find("Player") != null)
-            {
-                _two = GameObject.Find("Player").transform.position - _transform.position;
-            }
-            else
-            {
-                _two = Vector2.right;
-            }
         }
         float scalarResult = _one.x * _two.x + _one.y * _two.y;
         float absResult = _one.magnitude * _two.magnitude;
