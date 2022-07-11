@@ -10,11 +10,14 @@ public class CharStats : MonoBehaviour
     private Collider2D item;
     private Movement player_stats;
     private GunShoot player_gun;
+    public AudioClip audioPickUp;
+    private AudioSource audioSource;
 
     void Start()
     {
         hp_bar = GameObject.Find("health").GetComponent<Text>();
         armor_bar = GameObject.Find("Armor").GetComponent<Text>();
+        audioSource = GetComponent<AudioSource>();
         player_stats = gameObject.GetComponent<Movement>();
         hp = 50;
         armor = 0;
@@ -87,8 +90,17 @@ public class CharStats : MonoBehaviour
         {
             if (collision.gameObject.name == "enemy_flame_test(Clone)" && hp > 0)
             {
-                hp -= 10;
-                hp_bar.text = "Health: " + hp;
+                if (armor == 0)
+                {
+                    hp -= 10;
+                    hp_bar.text = "Health: " + hp;
+                }
+                else if(armor > 0)
+                {
+                    armor -= 10;
+                    armor = Mathf.Clamp(armor, 0, 100);
+                    armor_bar.text = "Armor: " + armor;
+                }
             }
             else if (collision.gameObject.name == "Armor_item")
             {
@@ -154,6 +166,7 @@ public class CharStats : MonoBehaviour
         Destroy(item.gameObject);
         armor = 100;
         armor_bar.text = "Armor: " + armor;
+        audioSource.PlayOneShot(audioPickUp);
     }
 
     private void HpPickap(Collider2D item)
@@ -161,22 +174,26 @@ public class CharStats : MonoBehaviour
         Destroy(item.gameObject);
         hp = 100;
         hp_bar.text = "Health: " + hp;
+        audioSource.PlayOneShot(audioPickUp);
     }
 
     private void SpeedBustPickUp(Collider2D item)
     {
         Destroy(item.gameObject);
         speed = true;
+        audioSource.PlayOneShot(audioPickUp);
     }
     private void JumpBustPickUp(Collider2D item)
     {
         Destroy(item.gameObject);
         jump = true;
+        audioSource.PlayOneShot(audioPickUp);
     }
 
     private void ShootBustPickUp(Collider2D item)
     {
         Destroy(item.gameObject);
         shoot = true;
+        audioSource.PlayOneShot(audioPickUp);
     }
 }

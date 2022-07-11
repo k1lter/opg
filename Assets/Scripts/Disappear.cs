@@ -16,14 +16,14 @@ public class Disappear : MonoBehaviour
     {
         if (gameObject.name == "flame_test(Clone)")
         {
-            if (!collision.gameObject.CompareTag("Player") && !collision.gameObject.CompareTag("Bullet"))
+            if (!collision.gameObject.CompareTag("Player") && !collision.gameObject.CompareTag("Bullet") && !collision.gameObject.CompareTag("Item"))
             {
                 Destroy(gameObject);
             }
         }
         else if (gameObject.name == "enemy_flame_test(Clone)")
         {
-            if (!collision.gameObject.CompareTag("Enemy") && !collision.gameObject.CompareTag("Bullet"))
+            if (!collision.gameObject.CompareTag("Enemy") && !collision.gameObject.CompareTag("Bullet") && !collision.gameObject.CompareTag("Item"))
             {
                 Destroy(gameObject);
             }

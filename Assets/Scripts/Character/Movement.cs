@@ -12,12 +12,15 @@ public class Movement : MonoBehaviour
     private CharacterAnimations _animations;
     [SerializeField] private SpriteRenderer _characterSprite;
     private SceneChange _pause;
+    public AudioClip audio_jump;
+    private AudioSource audioSource;
 
 
     void Start()
     {
         _rb = GetComponent<Rigidbody2D>();
         _animations = GetComponentInChildren<CharacterAnimations>();
+        audioSource = GetComponent<AudioSource>();
     }
 
     void Update()
@@ -81,5 +84,6 @@ public class Movement : MonoBehaviour
     private void Jump()
     {
         _rb.AddForce(Vector2.up * _jumpForce, ForceMode2D.Impulse);
+        audioSource.PlayOneShot(audio_jump);
     }
 }

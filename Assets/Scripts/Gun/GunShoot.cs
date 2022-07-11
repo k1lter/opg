@@ -8,8 +8,8 @@ public class GunShoot : MonoBehaviour
     private GameObject barrel;
     [SerializeField] Vector2 shootDirection;
     [SerializeField] int ammo;
-    public AudioSource shootSound;
-    public AudioSource noAmmo;
+    public AudioClip shootSound, noAmmo, reloadSound;
+    public AudioSource audioSource;
     public Text ammo_bar;
     public float timeLeft = 0, timer = 0.5f;
     private SceneChange _pause;
@@ -18,6 +18,7 @@ public class GunShoot : MonoBehaviour
     {
         bullet = Resources.Load("Prefabs/Weapons/flame_test") as GameObject;
         enemyBullet = Resources.Load("Prefabs/Weapons/enemy_flame_test") as GameObject;
+        audioSource = GetComponent<AudioSource>();
         ammo_bar = GameObject.Find("Ammo").GetComponent<Text>();
         ammo = 30;
         ammo_bar.text = "Ammo: " + ammo;
@@ -39,9 +40,9 @@ public class GunShoot : MonoBehaviour
                     ammo_bar.text = "Ammo: " + ammo;
                     timeLeft = timer;
                 }
-                else if (Input.GetKey(KeyCode.Mouse0) && ammo == 0)
+                else if (Input.GetKeyDown(KeyCode.Mouse0) && ammo == 0)
                 {
-                    noAmmo.Play();
+                    audioSource.PlayOneShot(noAmmo);
                 }
                 else if (Input.GetKeyDown(KeyCode.R))
                 {
@@ -71,6 +72,7 @@ public class GunShoot : MonoBehaviour
     private void Reload()
     {
         ammo = 30;
+        audioSource.PlayOneShot(reloadSound);
     }
 
     private void Shoot()
@@ -80,14 +82,14 @@ public class GunShoot : MonoBehaviour
             GameObject realBullet = Instantiate(bullet, barrel.transform.position, barrel.transform.rotation);
             _rb_bullet = realBullet.GetComponent<Rigidbody2D>();
             _rb_bullet.AddForce(barrel.transform.right * 50, ForceMode2D.Impulse);
-            shootSound.Play();
+            audioSource.PlayOneShot(shootSound);
         }
         else if(gameObject.name == "EnemyGun(Clone)")
         {
             GameObject realEnemyBullet = Instantiate(enemyBullet, barrel.transform.position, barrel.transform.rotation);
             _rb_bullet = realEnemyBullet.GetComponent<Rigidbody2D>();
             _rb_bullet.AddForce(barrel.transform.right * 50, ForceMode2D.Impulse);
-            shootSound.Play();
+            audioSource.PlayOneShot(shootSound);
         }
     }
 }
