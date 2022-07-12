@@ -192,7 +192,7 @@ public class Gun : MonoBehaviour
 
     private void ShootShotgun()
     {
-        Vector3 up_bullet = new Vector2(0, 0.8f);
+        Vector3 up_bullet = new Vector2(0, 1.5f);
         GameObject realBullet_0 = Instantiate(bullet, barrel.transform.position, barrel.transform.rotation);
         GameObject realBullet_1 = Instantiate(bullet, barrel.transform.position, barrel.transform.rotation);
         GameObject realBullet_2 = Instantiate(bullet, barrel.transform.position, barrel.transform.rotation);
@@ -234,26 +234,26 @@ public class Gun : MonoBehaviour
 
         if (gun_Type == gun_Types.pistol)
         {
-            gun_item = Resources.Load("Prefabs/Weapons/Pistol/Pistol_item") as GameObject;
+            gun_item = Resources.Load("Prefabs/Weapons/Items/Pistol_item") as GameObject;
         }
         else if (gun_Type == gun_Types.shotgun)
         {
-            gun_item = Resources.Load("Prefabs/Weapons/Shotgun/Shotgun_item") as GameObject;
+            gun_item = Resources.Load("Prefabs/Weapons/Items/Shotgun_item") as GameObject;
             new_name = "Shotgun_item";
         }
         else if (gun_Type == gun_Types.minigun)
         {
-            gun_item = Resources.Load("Prefabs/Weapons/Minigun/Minigun_item") as GameObject;
+            gun_item = Resources.Load("Prefabs/Weapons/Items/Minigun_item") as GameObject;
             new_name = "Minigun_item";
         }
         else if (gun_Type == gun_Types.sniper)
         {
-            gun_item = Resources.Load("Prefabs/Weapons/Sniper/Sniper_item") as GameObject;
+            gun_item = Resources.Load("Prefabs/Weapons/Items/Sniper_item") as GameObject;
             new_name = "Sniper_item";
         }
         else if (gun_Type == gun_Types.bazuka)
         {
-            gun_item = Resources.Load("Prefabs/Weapons/Bazuka/Bazuka_item") as GameObject;
+            gun_item = Resources.Load("Prefabs/Weapons/Items/Bazuka_item") as GameObject;
             new_name = "Bazuka_item";
         }
 

@@ -23,9 +23,15 @@ public class Disappear : MonoBehaviour
         }
         else if(gameObject.name == "Rocket(Clone)")
         {
+            AudioSource audioSource = GetComponent<AudioSource>();
             if (!collision.gameObject.CompareTag("Player") && !collision.gameObject.CompareTag("Bullet") && !collision.gameObject.CompareTag("Item"))
             {
-                Destroy(gameObject);
+                AudioClip explosion_audio = Resources.Load("Sounds/Weapons/Bazuka/Explosion") as AudioClip;
+                audioSource.PlayOneShot(explosion_audio);
+                transform.Find("Rocket_flame").gameObject.SetActive(true);
+                GetComponent<Rigidbody2D>().velocity = new Vector2(0,0);
+                GetComponent<Rigidbody2D>().simulated = false;
+                //Destroy(gameObject);
             }
         }
     }

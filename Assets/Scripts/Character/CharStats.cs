@@ -11,7 +11,6 @@ public class CharStats : MonoBehaviour
     private bool pickUp;
     private Collider2D item;
     private Movement player_stats;
-    private GunShoot player_gun;
     public AudioClip audioPickUp;
     private AudioSource audioSource;
     public GameObject active_gun;
@@ -55,20 +54,12 @@ public class CharStats : MonoBehaviour
         {
             player_stats._jumpForce = 8;
         }
-        if(shoot) //Не работает
-        {
-            if (GameObject.Find("Gun(Clone)") != null)
-            {
-                player_gun = GameObject.Find("Gun(Clone)").GetComponent<GunShoot>();
-                player_gun.timer = 0.25f;
-                shoot = false;
-            }
-        }
+
         if (hp == 0)
         {
             Debug.Log("Blin, ya umer(");
             Destroy(gameObject);
-            Destroy(active_gun); //Пусть пока так будет, но надо исправить
+            Destroy(FindActiveGun()); //Пусть пока так будет, но надо исправить
         }
         if (Input.GetKeyDown(KeyCode.E) && pickUp == true)
         {
@@ -132,18 +123,6 @@ public class CharStats : MonoBehaviour
             {
                 pickUp = true;
                 item = collision;
-            }
-            else if (collision.gameObject.name == "Buster_Shoot")
-            {
-                pickUp = true;
-                item = collision;
-            }
-        }
-        else if(gameObject.name == "Enemy")
-        {
-            if (collision.gameObject.name == "flame_test(Clone)" && hp > 0)
-            {
-                hp -= 10;
             }
         }
     }
