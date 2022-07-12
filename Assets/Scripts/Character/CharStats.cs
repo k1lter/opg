@@ -3,10 +3,11 @@ using UnityEngine.UI;
 
 public class CharStats : MonoBehaviour
 {
-    public int id;
+    private GameObject[] players;
+    public int id = -1, max_id = 0;
     public bool speed, jump, shoot;
     [SerializeField] int hp, armor;
-    private Text hp_bar, armor_bar;
+    private Text hp_bar, armor_bar, ammo_bar;
     private bool pickUp;
     private Collider2D item;
     private Movement player_stats;
@@ -14,12 +15,15 @@ public class CharStats : MonoBehaviour
     public AudioClip audioPickUp;
     private AudioSource audioSource;
     public GameObject active_gun;
+    private int ammo_gun, ammo_gun_max, ammo_inventory;
 
     void Start()
     {
-        id = 0;
+        players = GameObject.FindGameObjectsWithTag("Player");
+        Give_Id_Player(players);
         hp_bar = GameObject.Find("health").GetComponent<Text>();
         armor_bar = GameObject.Find("Armor").GetComponent<Text>();
+        ammo_bar = GameObject.Find("Ammo").GetComponent<Text>();
         audioSource = GetComponent<AudioSource>();
         player_stats = gameObject.GetComponent<Movement>();
         hp = 10;
@@ -31,6 +35,17 @@ public class CharStats : MonoBehaviour
 
     private void Update()
     {
+        if(FindActiveGun() != null)
+        {
+            ammo_gun = FindActiveGun().GetComponent<Gun>().ammo_gun;
+            ammo_gun_max = FindActiveGun().GetComponent<Gun>().ammo_gun_max;
+            ammo_inventory = FindActiveGun().GetComponent<Gun>().ammo_inv;
+            ammo_bar.text = "Ammo: " + ammo_gun + "/" + ammo_gun_max + ". Ammo left: " + ammo_inventory;
+        }
+        else
+        {
+            ammo_bar.text = "Ammo: ?";
+        }
         armor_bar.text = "Armor: " + armor;
         if(speed)
         {
@@ -191,5 +206,42 @@ public class CharStats : MonoBehaviour
         Destroy(item.gameObject);
         shoot = true;
         audioSource.PlayOneShot(audioPickUp);
+    }
+
+    private void Give_Id_Player(GameObject[] objects)
+    {
+        for(int i = 0; i < objects.Length; i++)
+        {
+            if(objects[i].GetComponent<CharStats>().id == -1)
+            {
+                objects[i].GetComponent<CharStats>().id = max_id;
+                max_id += 1;
+            }
+        }
+    }
+
+    public GameObject FindById(GameObject[] objects, int id)
+    {
+        for (int i = 0; i < objects.Length; i++)
+        {
+            if (objects[i].GetComponent<CharStats>().id == id)
+            {
+                return objects[i];
+            }
+        }
+        return null;
+    }
+
+    private GameObject FindActiveGun()
+    {
+        GameObject[] objects = GameObject.FindGameObjectsWithTag("Gun");
+        for (int i = 0; i < objects.Length; i++)
+        {
+            if (objects[i].GetComponent<Gun>().owner_id == id)
+            {
+                return objects[i];
+            }
+        }
+        return null;
     }
 }

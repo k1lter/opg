@@ -2,7 +2,8 @@ using UnityEngine;
 
 public class Gun_item_stats : MonoBehaviour
 {
-    [SerializeField] int ammo_gun;
+    public int ammo_gun;
+    public int ammo_inv;
     public enum gun_Types //Вид оружия
     {
         pistol = 0,

@@ -17,6 +17,8 @@ public class GunRotation : MonoBehaviour
     private Vector2 _two;
     private Vector3 gun_offset = new(0, -0.25f, -1);
     private Transform _transform;
+    private GameObject owner;
+    private GameObject[] players;
 
     private Camera _camera;
 
@@ -25,12 +27,20 @@ public class GunRotation : MonoBehaviour
         _camera = Camera.main;
         _one = Vector2.right;
         _transform = GetComponent<Transform>();
+        players = GameObject.FindGameObjectsWithTag("Player");
+        for (int i = 0; i < players.Length; i++)
+        {
+            if (players[i].GetComponent<CharStats>().id == GetComponent<Gun>().owner_id)
+            {
+                owner = players[i];
+            }
+        }
     }
 
     private void Update()
     {
         _pause = GameObject.Find("SceneChange").GetComponent<SceneChange>();
-        transform.position = GameObject.FindGameObjectWithTag("Player").transform.position + gun_offset;
+        transform.position = owner.transform.position + gun_offset;
         if (!_pause.pause)
         {
             float z = GetRotate();
@@ -46,10 +56,7 @@ public class GunRotation : MonoBehaviour
 
     private float GetRotate() //Функция выводит угол между горизонтом и курсором
     {
-        if (gameObject.name == "Pistol")
-        {
-            _two = _camera.ScreenToWorldPoint(Input.mousePosition) - _transform.position;
-        }
+        _two = _camera.ScreenToWorldPoint(Input.mousePosition) - _transform.position;
         float scalarResult = _one.x * _two.x + _one.y * _two.y;
         float absResult = _one.magnitude * _two.magnitude;
         float divition = scalarResult / absResult;

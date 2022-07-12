@@ -70,9 +70,9 @@ public class Movement : MonoBehaviour
 
     private void Move()
     {
+
         _direction = new Vector2(Input.GetAxis("Horizontal"), 0);
         transform.position += _direction * _speed * Time.deltaTime;
-        //_rb.AddForce(_direction * _speed, ForceMode2D.Force);
         _isMoving = _direction.x != 0 ? true : false;
         if (_isMoving)
         {

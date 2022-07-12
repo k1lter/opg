@@ -20,6 +20,8 @@ public class Gun : MonoBehaviour
         bazuka = 4
     }
 
+    private SceneChange _pause;
+
     //Звук
     private AudioSource audioSource;
     private AudioClip shoot_audio, no_ammo_audio, reload_audio;
@@ -33,47 +35,50 @@ public class Gun : MonoBehaviour
     [SerializeField] float damage; //Урон выстрела
     [SerializeField] ammo_Types ammo_Type; //ID вида патронов
 
-    public int gun_id;
     public int owner_id;
-    public int ammo_gun, ammo_inv;
+    public int ammo_gun, ammo_inv, ammo_gun_max;
     private float timeLeft = 0;
     private GameObject barrel;
     private GameObject bullet;
     private GameObject gun_item;
     private Rigidbody2D _rb_bullet;
+    private CharStats Find;
 
 
     void Start()
     {
-        owner_id = 0; //Надо вычислять автоматически!!!
-        ammo_gun = amount_of_ammo_gun;
-        ammo_inv = amount_of_ammo_inv;
+        ammo_gun_max = amount_of_ammo_gun;
+        Find = GameObject.FindGameObjectWithTag("Player").GetComponent<CharStats>();
         audioSource = GetComponent<AudioSource>();
         no_ammo_audio = Resources.Load("Sounds/Weapons/Pistol/NoAmmo") as AudioClip;
 
         //**********Выбор текстуры снаряда в зависимости от вида патрона
         if (ammo_Type != ammo_Types.bazuka_rocket)
         {
-            bullet = Resources.Load("Prefabs/Weapons/flame_test") as GameObject;
+            bullet = Resources.Load("Prefabs/Weapons/Gun_flame") as GameObject;
         }
         else
         {
-            //Тут ракета. Ее надо сделать
-            bullet = Resources.Load("Prefabs/Weapons/flame_test") as GameObject; 
+            bullet = Resources.Load("Prefabs/Weapons/Rocket") as GameObject; 
         }
         //***********
 
 
         //*************Выбор переменных для вида оружия !!!Готовы не все!!!
-        if(ammo_Type == ammo_Types.pistol_ammo || ammo_Type == ammo_Types.minigun_ammo)
+        if(ammo_Type == ammo_Types.pistol_ammo)
         {
             shoot_audio = Resources.Load("Sounds/Weapons/Pistol/Shoot_Pistol") as AudioClip;
             reload_audio = Resources.Load("Sounds/Weapons/Pistol/Reload") as AudioClip;
         }
+        else if (ammo_Type == ammo_Types.minigun_ammo)
+        {
+            shoot_audio = Resources.Load("Sounds/Weapons/Minigun/Shoot_Minigun") as AudioClip;
+            reload_audio = Resources.Load("Sounds/Weapons/Pistol/Reload") as AudioClip;
+        }
         else if(ammo_Type == ammo_Types.shotgun_ammo)
         {
-            shoot_audio = Resources.Load("Sounds/Weapons/Shotgun/Shoot") as AudioClip;
-            reload_audio = Resources.Load("Sounds/Weapons/Pistol/Reload") as AudioClip;
+            shoot_audio = Resources.Load("Sounds/Weapons/Shotgun/Shoot_Shotgun") as AudioClip;
+            reload_audio = Resources.Load("Sounds/Weapons/Shotgun/Reload_Shotgun") as AudioClip;
         }
         else if (ammo_Type == ammo_Types.sniper_ammo)
         {
@@ -82,8 +87,8 @@ public class Gun : MonoBehaviour
         }
         else if (ammo_Type == ammo_Types.bazuka_rocket)
         {
-            shoot_audio = Resources.Load("Sounds/Weapons/Bazuka/Shoot") as AudioClip;
-            reload_audio = Resources.Load("Sounds/Weapons/Pistol/Reload") as AudioClip;
+            shoot_audio = Resources.Load("Sounds/Weapons/Bazuka/Shoot_Bazuka") as AudioClip;
+            reload_audio = Resources.Load("Sounds/Weapons/Bazuka/Reload_Bazuka") as AudioClip;
         }
         //*****************************
 
@@ -94,28 +99,31 @@ public class Gun : MonoBehaviour
 
     void Update()
     {
-        timeLeft -= Time.deltaTime;
-        if (Input.GetKey(KeyCode.Mouse0) && ammo_gun > 0)
+        _pause = GameObject.Find("SceneChange").GetComponent<SceneChange>();
+        if (!_pause.pause)
         {
-            if (timeLeft < 0)
+            timeLeft -= Time.deltaTime;
+            if (Input.GetKey(KeyCode.Mouse0) && ammo_gun > 0)
             {
-                Shoot();
-                timeLeft = firing_frequency;
+                if (timeLeft < 0)
+                {
+                    Shoot();
+                    timeLeft = firing_frequency;
+                }
+            }
+            if (Input.GetKeyDown(KeyCode.Mouse0) && ammo_gun == 0)
+            {
+                audioSource.PlayOneShot(no_ammo_audio);
+            }
+            if (Input.GetKeyDown(KeyCode.R))
+            {
+                Reload();
+            }
+            if (Input.GetKeyDown(KeyCode.G))
+            {
+                DropGun();
             }
         }
-        if(Input.GetKeyDown(KeyCode.Mouse0) && ammo_gun == 0)
-        {
-            audioSource.PlayOneShot(no_ammo_audio);
-        }
-        if (Input.GetKeyDown(KeyCode.R))
-        {
-            Reload();
-        }
-        if(Input.GetKeyDown(KeyCode.G))
-        {
-            DropGun();
-        }
-
     }
 
     private void Shoot()
@@ -124,6 +132,18 @@ public class Gun : MonoBehaviour
         {
             case ammo_Types.pistol_ammo:
                 ShootPistol();
+                break;
+            case ammo_Types.minigun_ammo:
+                ShootMinigun();
+                break;
+            case ammo_Types.sniper_ammo:
+                ShootSniper();
+                break;
+            case ammo_Types.shotgun_ammo:
+                ShootShotgun();
+                break;
+            case ammo_Types.bazuka_rocket:
+                ShootBazuka();
                 break;
         }
     }
@@ -152,6 +172,48 @@ public class Gun : MonoBehaviour
         audioSource.PlayOneShot(shoot_audio);
         ammo_gun -= 1;
     }
+    private void ShootMinigun()
+    {
+        GameObject realBullet = Instantiate(bullet, barrel.transform.position, barrel.transform.rotation);
+        _rb_bullet = realBullet.GetComponent<Rigidbody2D>();
+        _rb_bullet.AddForce(barrel.transform.right * 45, ForceMode2D.Impulse);
+        audioSource.PlayOneShot(shoot_audio);
+        ammo_gun -= 1;
+    }
+
+    private void ShootSniper()
+    {
+        GameObject realBullet = Instantiate(bullet, barrel.transform.position, barrel.transform.rotation);
+        _rb_bullet = realBullet.GetComponent<Rigidbody2D>();
+        _rb_bullet.AddForce(barrel.transform.right * 60, ForceMode2D.Impulse);
+        audioSource.PlayOneShot(shoot_audio);
+        ammo_gun -= 1;
+    }
+
+    private void ShootShotgun()
+    {
+        Vector3 up_bullet = new Vector2(0, 0.8f);
+        GameObject realBullet_0 = Instantiate(bullet, barrel.transform.position, barrel.transform.rotation);
+        GameObject realBullet_1 = Instantiate(bullet, barrel.transform.position, barrel.transform.rotation);
+        GameObject realBullet_2 = Instantiate(bullet, barrel.transform.position, barrel.transform.rotation);
+        Rigidbody2D _rb_bullet_0 = realBullet_0.GetComponent<Rigidbody2D>();
+        Rigidbody2D _rb_bullet_1 = realBullet_1.GetComponent<Rigidbody2D>();
+        Rigidbody2D _rb_bullet_2 = realBullet_2.GetComponent<Rigidbody2D>();
+        _rb_bullet_0.AddForce(barrel.transform.right * 35, ForceMode2D.Impulse);
+        _rb_bullet_1.AddForce(barrel.transform.right * 35 + up_bullet, ForceMode2D.Impulse);
+        _rb_bullet_2.AddForce(barrel.transform.right * 35 + (up_bullet * -1), ForceMode2D.Impulse);
+        audioSource.PlayOneShot(shoot_audio);
+        ammo_gun -= 1;
+    }
+
+    private void ShootBazuka()
+    {
+        GameObject realBullet = Instantiate(bullet, barrel.transform.position, barrel.transform.rotation);
+        _rb_bullet = realBullet.GetComponent<Rigidbody2D>();
+        _rb_bullet.AddForce(barrel.transform.right * 25, ForceMode2D.Impulse);
+        audioSource.PlayOneShot(shoot_audio);
+        ammo_gun -= 1;
+    }
 
     private void DropGun()
     {
@@ -176,16 +238,34 @@ public class Gun : MonoBehaviour
         }
         else if (gun_Type == gun_Types.shotgun)
         {
-            gun_item = Resources.Load("Prefabs/Weapons/Pistol/Shotgun_item") as GameObject;
+            gun_item = Resources.Load("Prefabs/Weapons/Shotgun/Shotgun_item") as GameObject;
             new_name = "Shotgun_item";
+        }
+        else if (gun_Type == gun_Types.minigun)
+        {
+            gun_item = Resources.Load("Prefabs/Weapons/Minigun/Minigun_item") as GameObject;
+            new_name = "Minigun_item";
+        }
+        else if (gun_Type == gun_Types.sniper)
+        {
+            gun_item = Resources.Load("Prefabs/Weapons/Sniper/Sniper_item") as GameObject;
+            new_name = "Sniper_item";
+        }
+        else if (gun_Type == gun_Types.bazuka)
+        {
+            gun_item = Resources.Load("Prefabs/Weapons/Bazuka/Bazuka_item") as GameObject;
+            new_name = "Bazuka_item";
         }
 
         GameObject _gun_item = Instantiate(gun_item, gameObject.transform.position + dropOffset, Quaternion.identity);
         _gun_item.name = new_name;
+        _gun_item.GetComponent<Gun_item_stats>().ammo_gun = ammo_gun;
+        _gun_item.GetComponent<Gun_item_stats>().ammo_inv = ammo_inv;
         Rigidbody2D _girb = _gun_item.GetComponent<Rigidbody2D>();
         _girb.AddForce(dropVector.normalized * 2, ForceMode2D.Impulse);
 
-        GameObject.FindGameObjectWithTag("Player").GetComponent<CharStats>().active_gun = null;
+        GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
+        Find.FindById(players, owner_id).GetComponent<CharStats>().active_gun = null;
 
         Destroy(gameObject);
     }

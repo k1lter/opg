@@ -2,12 +2,12 @@ using UnityEngine;
 
 public class GunFunctions : MonoBehaviour
 {
-    private Collider2D active_player;
     [SerializeField] private Vector3 _gunPosOffset;
-    public GameObject gun;
-    private bool pickGun;
+    private Collider2D active_player;
     private AudioClip gun_pickup_audio;
     private AudioSource audioSource;
+    private bool pickGun;
+    public GameObject gun;
 
     void Start()
     {
@@ -24,7 +24,7 @@ public class GunFunctions : MonoBehaviour
         }
     }
 
-    private void OnTriggerEnter2D(Collider2D collision)
+    private void OnTriggerStay2D(Collider2D collision)
     {
         if (collision.gameObject.CompareTag("Player") && gameObject.CompareTag("Item"))
         {
@@ -54,22 +54,29 @@ public class GunFunctions : MonoBehaviour
         }
         else if (GetComponent<Gun_item_stats>().gun_Type == Gun_item_stats.gun_Types.shotgun)
         {
-            gun = Instantiate(Resources.Load("Prefabs/Weapons/Pistol/Pistol")) as GameObject;
+            gun = Instantiate(Resources.Load("Prefabs/Weapons/Shotgun/Shotgun")) as GameObject;
+            gun.name = "Shotgun";
         }
         else if (GetComponent<Gun_item_stats>().gun_Type == Gun_item_stats.gun_Types.sniper)
         {
-            gun = Instantiate(Resources.Load("Prefabs/Weapons/Pistol/Pistol")) as GameObject;
+            gun = Instantiate(Resources.Load("Prefabs/Weapons/Sniper/Sniper")) as GameObject;
+            gun.name = "Sniper";
         }
         else if (GetComponent<Gun_item_stats>().gun_Type == Gun_item_stats.gun_Types.minigun)
         {
-            gun = Instantiate(Resources.Load("Prefabs/Weapons/Pistol/Pistol")) as GameObject;
+            gun = Instantiate(Resources.Load("Prefabs/Weapons/Minigun/Minigun")) as GameObject;
+            gun.name = "Minigun";
         }
         else if (GetComponent<Gun_item_stats>().gun_Type == Gun_item_stats.gun_Types.bazuka)
         {
-            gun = Instantiate(Resources.Load("Prefabs/Weapons/Pistol/Pistol")) as GameObject;
+            gun = Instantiate(Resources.Load("Prefabs/Weapons/Bazuka/Bazuka")) as GameObject;
+            gun.name = "Bazuka";
         }
         active_player.gameObject.GetComponent<CharStats>().active_gun = gun;
+        gun.GetComponent<Gun>().owner_id = active_player.gameObject.GetComponent<CharStats>().id;
         audioSource.PlayOneShot(gun_pickup_audio);
+        gun.GetComponent<Gun>().ammo_gun = GetComponent<Gun_item_stats>().ammo_gun;
+        gun.GetComponent<Gun>().ammo_inv = GetComponent<Gun_item_stats>().ammo_inv;
         Destroy(gameObject);
     }
 }

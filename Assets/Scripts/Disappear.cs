@@ -14,16 +14,16 @@ public class Disappear : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (gameObject.name == "flame_test(Clone)")
+        if (gameObject.name == "Gun_flame(Clone)")
         {
             if (!collision.gameObject.CompareTag("Player") && !collision.gameObject.CompareTag("Bullet") && !collision.gameObject.CompareTag("Item"))
             {
                 Destroy(gameObject);
             }
         }
-        else if (gameObject.name == "enemy_flame_test(Clone)")
+        else if(gameObject.name == "Rocket(Clone)")
         {
-            if (!collision.gameObject.CompareTag("Enemy") && !collision.gameObject.CompareTag("Bullet") && !collision.gameObject.CompareTag("Item"))
+            if (!collision.gameObject.CompareTag("Player") && !collision.gameObject.CompareTag("Bullet") && !collision.gameObject.CompareTag("Item"))
             {
                 Destroy(gameObject);
             }
