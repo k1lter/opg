@@ -256,16 +256,18 @@ public class Gun : MonoBehaviour
             gun_item = Resources.Load("Prefabs/Weapons/Items/Bazuka_item") as GameObject;
             new_name = "Bazuka_item";
         }
+        if(ammo_gun != 0 || ammo_inv != 0)
+        {
+            GameObject _gun_item = Instantiate(gun_item, gameObject.transform.position + dropOffset, Quaternion.identity);
+            _gun_item.name = new_name;
+            _gun_item.GetComponent<Gun_item_stats>().ammo_gun = ammo_gun;
+            _gun_item.GetComponent<Gun_item_stats>().ammo_inv = ammo_inv;
+            Rigidbody2D _girb = _gun_item.GetComponent<Rigidbody2D>();
+            _girb.AddForce(dropVector.normalized * 2, ForceMode2D.Impulse);
 
-        GameObject _gun_item = Instantiate(gun_item, gameObject.transform.position + dropOffset, Quaternion.identity);
-        _gun_item.name = new_name;
-        _gun_item.GetComponent<Gun_item_stats>().ammo_gun = ammo_gun;
-        _gun_item.GetComponent<Gun_item_stats>().ammo_inv = ammo_inv;
-        Rigidbody2D _girb = _gun_item.GetComponent<Rigidbody2D>();
-        _girb.AddForce(dropVector.normalized * 2, ForceMode2D.Impulse);
-
-        GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
-        Find.FindById(players, owner_id).GetComponent<CharStats>().active_gun = null;
+            GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
+            Find.FindById(players, owner_id).GetComponent<CharStats>().active_gun = null;
+        }
 
         Destroy(gameObject);
     }

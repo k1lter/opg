@@ -6,7 +6,7 @@ public class BustJump : MonoBehaviour
     private bool in_zone = false;
     private Collider2D player;
 
-    void Update()
+    void FixedUpdate()
     {
         if(in_zone && player.gameObject.GetComponent<Movement>()._isGrounded)
         {

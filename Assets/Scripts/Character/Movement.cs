@@ -29,7 +29,6 @@ public class Movement : MonoBehaviour
         _pause = GameObject.Find("SceneChange").GetComponent<SceneChange>();
         if (!_pause.pause)
         {
-            Move();
             CheckGround();
             if (Input.GetKeyDown(KeyCode.Space))
             {
@@ -39,6 +38,7 @@ public class Movement : MonoBehaviour
                     _animations.Jump();
                 }
             }
+            Move();
         }
     }
 
@@ -71,7 +71,6 @@ public class Movement : MonoBehaviour
 
     private void Move()
     {
-
         _direction = new Vector2(Input.GetAxis("Horizontal"), 0);
         transform.position += _direction * _speed * Time.deltaTime;
         _isMoving = _direction.x != 0 ? true : false;
@@ -85,6 +84,7 @@ public class Movement : MonoBehaviour
     private void Jump()
     {
         _rb.AddForce(Vector2.up * _jumpForce, ForceMode2D.Impulse);
+        _isGrounded = false;
         audioSource.PlayOneShot(audio_jump);
     }
 }

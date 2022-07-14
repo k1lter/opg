@@ -29,6 +29,7 @@ public class Disappear : MonoBehaviour
                 AudioClip explosion_audio = Resources.Load("Sounds/Weapons/Bazuka/Explosion") as AudioClip;
                 audioSource.PlayOneShot(explosion_audio);
                 transform.Find("Rocket_flame").gameObject.SetActive(true);
+                transform.Find("Rocket_bullet").gameObject.SetActive(false);
                 GetComponent<Rigidbody2D>().velocity = new Vector2(0,0);
                 GetComponent<Rigidbody2D>().simulated = false;
                 //Destroy(gameObject);

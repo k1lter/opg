@@ -5,9 +5,9 @@ public class CharStats : MonoBehaviour
 {
     private GameObject[] players;
     public int id = -1, max_id = 0;
-    public bool speed, jump, shoot;
+    public bool speed, jump;
     [SerializeField] int hp, armor;
-    private Text hp_bar, armor_bar, ammo_bar;
+    private Text hp_bar, armor_bar, ammo_bar, speed_bar, jump_bar;
     private bool pickUp;
     private Collider2D item;
     private Movement player_stats;
@@ -15,16 +15,23 @@ public class CharStats : MonoBehaviour
     private AudioSource audioSource;
     public GameObject active_gun;
     private int ammo_gun, ammo_gun_max, ammo_inventory;
+    [SerializeField] float timer_jump, timer_speed;
+    public float timeLeftJump, timeLeftSpeed;
 
     void Start()
     {
+        player_stats = gameObject.GetComponent<Movement>();
+        timeLeftJump = timer_jump;
+        timeLeftSpeed = timer_speed;
         players = GameObject.FindGameObjectsWithTag("Player");
+        audioPickUp = Resources.Load("Sounds/Action/PickUp") as AudioClip;
         Give_Id_Player(players);
         hp_bar = GameObject.Find("health").GetComponent<Text>();
         armor_bar = GameObject.Find("Armor").GetComponent<Text>();
         ammo_bar = GameObject.Find("Ammo").GetComponent<Text>();
+        jump_bar = GameObject.Find("Jump").GetComponent<Text>();
+        speed_bar = GameObject.Find("Speed").GetComponent<Text>();
         audioSource = GetComponent<AudioSource>();
-        player_stats = gameObject.GetComponent<Movement>();
         hp = 10;
         armor = 0;
         hp_bar.text = "Health: " + hp;
@@ -34,7 +41,29 @@ public class CharStats : MonoBehaviour
 
     private void Update()
     {
-        if(FindActiveGun() != null)
+        if (jump)
+        {
+            GameObject.Find("Jump").SetActive(true);
+            timeLeftJump -= Time.deltaTime;
+            jump_bar.text = "Jump: " + (int)timeLeftJump;
+            if (timeLeftJump < 0)
+            {
+                jump = false;
+                timeLeftJump = timer_jump;
+            }
+        }
+        if (speed)
+        {
+            GameObject.Find("Speed").SetActive(true);
+            timeLeftSpeed -= Time.deltaTime;
+            speed_bar.text = "Speed: " + (int)timeLeftSpeed;
+            if (timeLeftSpeed < 0)
+            {
+                speed = false;
+                timeLeftSpeed = timer_speed;
+            }
+        }
+        if (FindActiveGun() != null)
         {
             ammo_gun = FindActiveGun().GetComponent<Gun>().ammo_gun;
             ammo_gun_max = FindActiveGun().GetComponent<Gun>().ammo_gun_max;
@@ -46,42 +75,46 @@ public class CharStats : MonoBehaviour
             ammo_bar.text = "Ammo: ?";
         }
         armor_bar.text = "Armor: " + armor;
-        if(speed)
+        if (speed)
         {
             player_stats._speed = 8;
+        }
+        else
+        {
+            player_stats._speed = 5;
         }
         if(jump)
         {
             player_stats._jumpForce = 8;
+        }
+        else
+        {
+            player_stats._jumpForce = 5;
         }
 
         if (hp == 0)
         {
             Debug.Log("Blin, ya umer(");
             Destroy(gameObject);
-            Destroy(FindActiveGun()); //Пусть пока так будет, но надо исправить
+            Destroy(FindActiveGun());
         }
         if (Input.GetKeyDown(KeyCode.E) && pickUp == true)
         {
-            if (item.gameObject.name == "Armor_item")
+            if (item.gameObject.name == "Armor_item(Clone)")
             {
                 ArmorPickUp(item);
             }
-            else if(item.gameObject.name == "Hp_item")
+            else if(item.gameObject.name == "Hp_item(Clone)")
             {
                 HpPickap(item);
             }
-            else if (item.gameObject.name == "Buster_Speed")
+            else if (item.gameObject.name == "Buster_Speed(Clone)")
             {
                 SpeedBustPickUp(item);
             }
-            else if (item.gameObject.name == "Buster_Jump")
+            else if (item.gameObject.name == "Buster_Jump(Clone)")
             {
                 JumpBustPickUp(item);
-            }
-            else if (item.gameObject.name == "Buster_Shoot")
-            {
-                ShootBustPickUp(item);
             }
         }
     }
@@ -104,22 +137,22 @@ public class CharStats : MonoBehaviour
                     armor_bar.text = "Armor: " + armor;
                 }
             }
-            else if (collision.gameObject.name == "Armor_item")
+            else if (collision.gameObject.name == "Armor_item(Clone)")
             {
                 pickUp = true;
                 item = collision;
             }
-            else if (collision.gameObject.name == "Hp_item")
+            else if (collision.gameObject.name == "Hp_item(Clone)")
             {
                 pickUp = true;
                 item = collision;
             }
-            else if (collision.gameObject.name == "Buster_Speed")
+            else if (collision.gameObject.name == "Buster_Speed(Clone)")
             {
                 pickUp = true;
                 item = collision;
             }
-            else if (collision.gameObject.name == "Buster_Jump")
+            else if (collision.gameObject.name == "Buster_Jump(Clone)")
             {
                 pickUp = true;
                 item = collision;
@@ -129,23 +162,23 @@ public class CharStats : MonoBehaviour
 
     private void OnTriggerExit2D(Collider2D collision)
     {
-        if (collision.gameObject.name == "Armor_item")
+        if (collision.gameObject.name == "Armor_item(Clone)")
         {
             pickUp = false;
         }
-        else if (collision.gameObject.name == "Hp_item")
+        else if (collision.gameObject.name == "Hp_item(Clone)")
         {
             pickUp = false;
         }
-        else if (collision.gameObject.name == "Buster_Speed")
+        else if (collision.gameObject.name == "Buster_Speed(Clone)")
         {
             pickUp = false;
         }
-        else if (collision.gameObject.name == "Buster_Jump")
+        else if (collision.gameObject.name == "Buster_Jump(Clone)")
         {
             pickUp = false;
         }
-        else if (collision.gameObject.name == "Buster_Shoot")
+        else if (collision.gameObject.name == "Buster_Shoot(Clone)")
         {
             pickUp = false;
         }
@@ -170,20 +203,15 @@ public class CharStats : MonoBehaviour
     private void SpeedBustPickUp(Collider2D item)
     {
         Destroy(item.gameObject);
+        timeLeftSpeed = timer_speed;
         speed = true;
         audioSource.PlayOneShot(audioPickUp);
     }
     private void JumpBustPickUp(Collider2D item)
     {
         Destroy(item.gameObject);
+        timeLeftJump = timer_jump;
         jump = true;
-        audioSource.PlayOneShot(audioPickUp);
-    }
-
-    private void ShootBustPickUp(Collider2D item)
-    {
-        Destroy(item.gameObject);
-        shoot = true;
         audioSource.PlayOneShot(audioPickUp);
     }
 

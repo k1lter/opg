@@ -50,7 +50,7 @@ public class ItemSpawn : MonoBehaviour
     private void SpawnItem()
     {
         GameObject spawned_item;
-        spawned_item = Instantiate((GameObject)possible_items[Random.Range(0, possible_items.Length - 1)], transform);
+        spawned_item = Instantiate((GameObject)possible_items[Random.Range(0, possible_items.Length)], transform);
         spawned_item.transform.position = gameObject.transform.position;
     }
 }
