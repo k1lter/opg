@@ -8,6 +8,7 @@ public class SceneChange : MonoBehaviour
     public GameObject start_menu;
     public GameObject options;
     public GameObject pause_menu;
+    public bool two_players = false;
 
     private void Update()
     {
@@ -37,7 +38,21 @@ public class SceneChange : MonoBehaviour
 
     public void ChangeScene(int scene_id)
     {
-        SceneManager.LoadScene(scene_id);
+        if (scene_id == 1)
+        {
+            if (!two_players)
+            {
+                SceneManager.LoadScene(1);
+            }
+            else
+            {
+                SceneManager.LoadScene(2);
+            }
+        }
+        else
+        {
+            SceneManager.LoadScene(scene_id);
+        }
     }
 
     public void Exit()
@@ -49,5 +64,16 @@ public class SceneChange : MonoBehaviour
     {
         pause = false;
         pause_menu.SetActive(false);
+    }
+    public void SwitchPlayers()
+    {
+        if (two_players)
+        {
+            two_players = false;
+        }
+        else
+        {
+            two_players = true;
+        }
     }
 }

@@ -43,9 +43,16 @@ public class GunRotation : MonoBehaviour
         transform.position = owner.transform.position + gun_offset;
         if (!_pause.pause)
         {
-            float z = GetRotate();
-            _transform.rotation = Quaternion.Euler(0, 0, z);
-            flipSprite();
+            if (!owner.GetComponent<CharStats>().two_players)
+            {
+                float z = GetRotate();
+                _transform.rotation = Quaternion.Euler(0, 0, z);
+                flipSprite();
+            }
+            else
+            {
+
+            }
         }
     }
 

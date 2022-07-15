@@ -43,11 +43,13 @@ public class Gun : MonoBehaviour
     private GameObject gun_item;
     private Rigidbody2D _rb_bullet;
     private CharStats Find;
+    private GameObject[] players;
 
 
     void Start()
     {
         ammo_gun_max = amount_of_ammo_gun;
+        players = GameObject.FindGameObjectsWithTag("Player");
         Find = GameObject.FindGameObjectWithTag("Player").GetComponent<CharStats>();
         audioSource = GetComponent<AudioSource>();
         no_ammo_audio = Resources.Load("Sounds/Weapons/Pistol/NoAmmo") as AudioClip;
@@ -103,25 +105,77 @@ public class Gun : MonoBehaviour
         if (!_pause.pause)
         {
             timeLeft -= Time.deltaTime;
-            if (Input.GetKey(KeyCode.Mouse0) && ammo_gun > 0)
+            if (!Find.two_players)
             {
-                if (timeLeft < 0)
+                if (Input.GetKey(KeyCode.Mouse0) && ammo_gun > 0)
                 {
-                    Shoot();
-                    timeLeft = firing_frequency;
+                    if (timeLeft < 0)
+                    {
+                        Shoot();
+                        timeLeft = firing_frequency;
+                    }
+                }
+                if (Input.GetKeyDown(KeyCode.Mouse0) && ammo_gun == 0)
+                {
+                    audioSource.PlayOneShot(no_ammo_audio);
+                }
+                if (Input.GetKeyDown(KeyCode.R))
+                {
+                    Reload();
+                }
+                if (Input.GetKeyDown(KeyCode.G))
+                {
+                    DropGun();
                 }
             }
-            if (Input.GetKeyDown(KeyCode.Mouse0) && ammo_gun == 0)
+            else
             {
-                audioSource.PlayOneShot(no_ammo_audio);
-            }
-            if (Input.GetKeyDown(KeyCode.R))
-            {
-                Reload();
-            }
-            if (Input.GetKeyDown(KeyCode.G))
-            {
-                DropGun();
+                if(Find.FindById(players,owner_id) == players[0])
+                {
+                    if (Input.GetKey(KeyCode.S) && ammo_gun > 0)
+                    {
+                        if (timeLeft < 0)
+                        {
+                            Shoot();
+                            timeLeft = firing_frequency;
+                        }
+                    }
+                    if (Input.GetKeyDown(KeyCode.S) && ammo_gun == 0)
+                    {
+                        audioSource.PlayOneShot(no_ammo_audio);
+                    }
+                    if (Input.GetKeyDown(KeyCode.R))
+                    {
+                        Reload();
+                    }
+                    if (Input.GetKeyDown(KeyCode.G))
+                    {
+                        DropGun();
+                    }
+                }
+                else
+                {
+                    if (Input.GetKey(KeyCode.DownArrow) && ammo_gun > 0)
+                    {
+                        if (timeLeft < 0)
+                        {
+                            Shoot();
+                            timeLeft = firing_frequency;
+                        }
+                    }
+                    if (Input.GetKeyDown(KeyCode.DownArrow) && ammo_gun == 0)
+                    {
+                        audioSource.PlayOneShot(no_ammo_audio);
+                    }
+                    if (Input.GetKeyDown(KeyCode.RightControl))
+                    {
+                        Reload();
+                    }
+                    if (Input.GetKeyDown(KeyCode.RightShift))
+                    {
+                        DropGun();
+                    }
+                }
             }
         }
     }
@@ -265,7 +319,6 @@ public class Gun : MonoBehaviour
             Rigidbody2D _girb = _gun_item.GetComponent<Rigidbody2D>();
             _girb.AddForce(dropVector.normalized * 2, ForceMode2D.Impulse);
 
-            GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
             Find.FindById(players, owner_id).GetComponent<CharStats>().active_gun = null;
         }
 

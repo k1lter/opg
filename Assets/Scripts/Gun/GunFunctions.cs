@@ -4,6 +4,7 @@ public class GunFunctions : MonoBehaviour
 {
     [SerializeField] private Vector3 _gunPosOffset;
     private Collider2D active_player;
+    private GameObject[] players;
     private AudioClip gun_pickup_audio;
     private AudioSource audioSource;
     private bool pickGun;
@@ -11,6 +12,7 @@ public class GunFunctions : MonoBehaviour
 
     void Start()
     {
+        players = GameObject.FindGameObjectsWithTag("Player");
         audioSource = GetComponent<AudioSource>();
         gun_pickup_audio = Resources.Load("Sounds/Action/PickUp") as AudioClip;
         pickGun = false;
@@ -18,9 +20,22 @@ public class GunFunctions : MonoBehaviour
 
     void Update()
     {
-        if(pickGun == true && Input.GetKeyDown(KeyCode.E))
+        if (active_player != null)
         {
-            PickGun();
+            if (active_player.gameObject == players[0])
+            {
+                if (pickGun == true && Input.GetKeyDown(KeyCode.E))
+                {
+                    PickGun();
+                }
+            }
+            else
+            {
+                if (pickGun == true && Input.GetKeyDown(KeyCode.End))
+                {
+                    PickGun();
+                }
+            }
         }
     }
 

@@ -17,9 +17,14 @@ public class CharStats : MonoBehaviour
     private int ammo_gun, ammo_gun_max, ammo_inventory;
     [SerializeField] float timer_jump, timer_speed;
     public float timeLeftJump, timeLeftSpeed;
+    public bool two_players = false;
 
     void Start()
     {
+        if(GameObject.FindGameObjectsWithTag("Player").Length > 1)
+        {
+            two_players = true;
+        }
         player_stats = gameObject.GetComponent<Movement>();
         timeLeftJump = timer_jump;
         timeLeftSpeed = timer_speed;
@@ -98,13 +103,32 @@ public class CharStats : MonoBehaviour
             Destroy(gameObject);
             Destroy(FindActiveGun());
         }
-        if (Input.GetKeyDown(KeyCode.E) && pickUp == true)
+        if (Input.GetKeyDown(KeyCode.E) && pickUp == true && gameObject == players[0])
         {
             if (item.gameObject.name == "Armor_item(Clone)")
             {
                 ArmorPickUp(item);
             }
             else if(item.gameObject.name == "Hp_item(Clone)")
+            {
+                HpPickap(item);
+            }
+            else if (item.gameObject.name == "Buster_Speed(Clone)")
+            {
+                SpeedBustPickUp(item);
+            }
+            else if (item.gameObject.name == "Buster_Jump(Clone)")
+            {
+                JumpBustPickUp(item);
+            }
+        }
+        else if(Input.GetKeyDown(KeyCode.End) && pickUp == true && gameObject == players[1])
+        {
+            if (item.gameObject.name == "Armor_item(Clone)")
+            {
+                ArmorPickUp(item);
+            }
+            else if (item.gameObject.name == "Hp_item(Clone)")
             {
                 HpPickap(item);
             }

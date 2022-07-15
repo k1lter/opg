@@ -14,10 +14,12 @@ public class Movement : MonoBehaviour
     private SceneChange _pause;
     private AudioClip audio_jump;
     private AudioSource audioSource;
+    private GameObject[] players;
 
 
     void Start()
     {
+        players = GameObject.FindGameObjectsWithTag("Player");
         _rb = GetComponent<Rigidbody2D>();
         _animations = GetComponentInChildren<CharacterAnimations>();
         audioSource = GetComponent<AudioSource>();
@@ -30,15 +32,22 @@ public class Movement : MonoBehaviour
         if (!_pause.pause)
         {
             CheckGround();
-            if (Input.GetKeyDown(KeyCode.Space))
+            if (players.Length == 1)
             {
-                if (_isGrounded)
+                if (Input.GetKeyDown(KeyCode.Space))
                 {
-                    Jump();
-                    _animations.Jump();
+                    if (_isGrounded)
+                    {
+                        Jump();
+                        _animations.Jump();
+                    }
                 }
+                Move();
             }
-            Move();
+            else
+            {
+                Move2players();
+            }
         }
     }
 
@@ -81,6 +90,49 @@ public class Movement : MonoBehaviour
         _animations.IsMoving = _isMoving;
         _animations.IsFlying = IsFlying();
     }
+
+    private void Move2players()
+    {
+        if(gameObject == players[0])
+        {
+            if(Input.GetKey(KeyCode.A))
+            {
+                transform.position = transform.position + Vector3.left * _speed * Time.deltaTime;
+            }
+            else if(Input.GetKey(KeyCode.D))
+            {
+                transform.position = transform.position + Vector3.right * _speed * Time.deltaTime;
+            }
+            if(Input.GetKeyDown(KeyCode.W))
+            {
+                if (_isGrounded)
+                {
+                    Jump();
+                    _animations.Jump();
+                }
+            }
+        }
+        else
+        {
+            if (Input.GetKey(KeyCode.LeftArrow))
+            {
+                transform.position = transform.position + Vector3.left * _speed * Time.deltaTime;
+            }
+            else if (Input.GetKey(KeyCode.RightArrow))
+            {
+                transform.position = transform.position + Vector3.right * _speed * Time.deltaTime;
+            }
+            if (Input.GetKeyDown(KeyCode.UpArrow))
+            {
+                if (_isGrounded)
+                {
+                    Jump();
+                    _animations.Jump();
+                }
+            }
+        }
+    }
+
     private void Jump()
     {
         _rb.AddForce(Vector2.up * _jumpForce, ForceMode2D.Impulse);
