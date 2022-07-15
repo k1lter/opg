@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class Disappear : MonoBehaviour
 {
-    private float timeLeft = 5;
+    [SerializeField] float timeLeft;
     private void Update()
     {
         timeLeft -= Time.deltaTime;
@@ -32,7 +32,6 @@ public class Disappear : MonoBehaviour
                 transform.Find("Rocket_bullet").gameObject.SetActive(false);
                 GetComponent<Rigidbody2D>().velocity = new Vector2(0,0);
                 GetComponent<Rigidbody2D>().simulated = false;
-                //Destroy(gameObject);
             }
         }
     }
