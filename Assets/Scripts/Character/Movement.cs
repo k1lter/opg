@@ -6,7 +6,7 @@ public class Movement : MonoBehaviour
     [SerializeField] public float _jumpForce;
     [SerializeField] private Vector3 _groundCheckOffset;
     private Rigidbody2D _rb;
-    private Vector3 _direction;
+    public Vector3 _direction;
     private bool _isMoving;
     public bool _isGrounded;
     private CharacterAnimations _animations;
@@ -93,15 +93,18 @@ public class Movement : MonoBehaviour
 
     private void Move2players()
     {
-        if(gameObject == players[0])
+        _direction = new Vector2(0, 0);
+        if (gameObject == players[0])
         {
             if(Input.GetKey(KeyCode.A))
             {
                 transform.position = transform.position + Vector3.left * _speed * Time.deltaTime;
+                _direction = Vector2.left;
             }
             else if(Input.GetKey(KeyCode.D))
             {
                 transform.position = transform.position + Vector3.right * _speed * Time.deltaTime;
+                _direction = Vector2.right;
             }
             if(Input.GetKeyDown(KeyCode.W))
             {
@@ -117,10 +120,12 @@ public class Movement : MonoBehaviour
             if (Input.GetKey(KeyCode.LeftArrow))
             {
                 transform.position = transform.position + Vector3.left * _speed * Time.deltaTime;
+                _direction = Vector2.left;
             }
             else if (Input.GetKey(KeyCode.RightArrow))
             {
                 transform.position = transform.position + Vector3.right * _speed * Time.deltaTime;
+                _direction = Vector2.right;
             }
             if (Input.GetKeyDown(KeyCode.UpArrow))
             {
@@ -131,6 +136,13 @@ public class Movement : MonoBehaviour
                 }
             }
         }
+        _isMoving = _direction.x != 0 ? true : false;
+        if (_isMoving)
+        {
+            _characterSprite.flipX = _direction.x > 0 ? false : true;
+        }
+        _animations.IsMoving = _isMoving;
+        _animations.IsFlying = IsFlying();
     }
 
     private void Jump()

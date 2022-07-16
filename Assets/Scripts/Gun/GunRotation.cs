@@ -19,6 +19,7 @@ public class GunRotation : MonoBehaviour
     private Transform _transform;
     private GameObject owner;
     private GameObject[] players;
+    public bool gun_turn_left = false;
 
     private Camera _camera;
 
@@ -51,7 +52,26 @@ public class GunRotation : MonoBehaviour
             }
             else
             {
-
+                if(owner.GetComponent<Movement>()._direction.x > 0)
+                {
+                    gun_turn_left = false;
+                }
+                else if(owner.GetComponent<Movement>()._direction.x < 0)
+                {
+                    gun_turn_left = true;
+                }
+                if (gun_turn_left)
+                {
+                    float z = 180;
+                    _transform.rotation = Quaternion.Euler(0, 0, z);
+                    flipSprite();
+                }
+                else
+                {
+                    float z = 0;
+                    _transform.rotation = Quaternion.Euler(0, 0, z);
+                    flipSprite();
+                }
             }
         }
     }

@@ -221,6 +221,7 @@ public class Gun : MonoBehaviour
     private void ShootPistol()
     {
         GameObject realBullet = Instantiate(bullet, barrel.transform.position, barrel.transform.rotation);
+        realBullet.GetComponent<Disappear>().owner_id = owner_id;
         _rb_bullet = realBullet.GetComponent<Rigidbody2D>();
         _rb_bullet.AddForce(barrel.transform.right * 35, ForceMode2D.Impulse);
         audioSource.PlayOneShot(shoot_audio);
@@ -229,6 +230,7 @@ public class Gun : MonoBehaviour
     private void ShootMinigun()
     {
         GameObject realBullet = Instantiate(bullet, barrel.transform.position, barrel.transform.rotation);
+        realBullet.GetComponent<Disappear>().owner_id = owner_id;
         _rb_bullet = realBullet.GetComponent<Rigidbody2D>();
         _rb_bullet.AddForce(barrel.transform.right * 45, ForceMode2D.Impulse);
         audioSource.PlayOneShot(shoot_audio);
@@ -238,6 +240,7 @@ public class Gun : MonoBehaviour
     private void ShootSniper()
     {
         GameObject realBullet = Instantiate(bullet, barrel.transform.position, barrel.transform.rotation);
+        realBullet.GetComponent<Disappear>().owner_id = owner_id;
         _rb_bullet = realBullet.GetComponent<Rigidbody2D>();
         _rb_bullet.AddForce(barrel.transform.right * 60, ForceMode2D.Impulse);
         audioSource.PlayOneShot(shoot_audio);
@@ -248,8 +251,11 @@ public class Gun : MonoBehaviour
     {
         Vector3 up_bullet = new Vector2(0, 1.5f);
         GameObject realBullet_0 = Instantiate(bullet, barrel.transform.position, barrel.transform.rotation);
+        realBullet_0.GetComponent<Disappear>().owner_id = owner_id;
         GameObject realBullet_1 = Instantiate(bullet, barrel.transform.position, barrel.transform.rotation);
+        realBullet_1.GetComponent<Disappear>().owner_id = owner_id;
         GameObject realBullet_2 = Instantiate(bullet, barrel.transform.position, barrel.transform.rotation);
+        realBullet_2.GetComponent<Disappear>().owner_id = owner_id;
         Rigidbody2D _rb_bullet_0 = realBullet_0.GetComponent<Rigidbody2D>();
         Rigidbody2D _rb_bullet_1 = realBullet_1.GetComponent<Rigidbody2D>();
         Rigidbody2D _rb_bullet_2 = realBullet_2.GetComponent<Rigidbody2D>();
@@ -263,6 +269,7 @@ public class Gun : MonoBehaviour
     private void ShootBazuka()
     {
         GameObject realBullet = Instantiate(bullet, barrel.transform.position, barrel.transform.rotation);
+        realBullet.GetComponent<Disappear>().owner_id = owner_id;
         _rb_bullet = realBullet.GetComponent<Rigidbody2D>();
         _rb_bullet.AddForce(barrel.transform.right * 25, ForceMode2D.Impulse);
         audioSource.PlayOneShot(shoot_audio);

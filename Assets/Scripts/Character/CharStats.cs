@@ -8,6 +8,7 @@ public class CharStats : MonoBehaviour
     public bool speed, jump;
     [SerializeField] int hp, armor;
     private Text hp_bar, armor_bar, ammo_bar, speed_bar, jump_bar;
+    public GameObject victory_menu;
     private bool pickUp;
     private Collider2D item;
     private Movement player_stats;
@@ -18,6 +19,7 @@ public class CharStats : MonoBehaviour
     [SerializeField] float timer_jump, timer_speed;
     public float timeLeftJump, timeLeftSpeed;
     public bool two_players = false;
+    private SceneChange _pause;
 
     void Start()
     {
@@ -26,6 +28,7 @@ public class CharStats : MonoBehaviour
             two_players = true;
         }
         player_stats = gameObject.GetComponent<Movement>();
+        _pause = GameObject.Find("SceneChange").GetComponent<SceneChange>();
         timeLeftJump = timer_jump;
         timeLeftSpeed = timer_speed;
         players = GameObject.FindGameObjectsWithTag("Player");
@@ -99,9 +102,19 @@ public class CharStats : MonoBehaviour
 
         if (hp == 0)
         {
-            Debug.Log("Blin, ya umer(");
-            Destroy(gameObject);
-            Destroy(FindActiveGun());
+            if (players.Length != 1)
+            {
+                _pause.pause = true;
+                victory_menu.SetActive(true);
+                if (gameObject != players[0])
+                {
+                    victory_menu.transform.Find("Victory_text").GetComponent<Text>().text = "Player 1 Win!";
+                }
+                else
+                {
+                    victory_menu.transform.Find("Victory_text").GetComponent<Text>().text = "Player 2 Win!";
+                }
+            }
         }
         if (Input.GetKeyDown(KeyCode.E) && pickUp == true && gameObject == players[0])
         {
@@ -145,18 +158,34 @@ public class CharStats : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (gameObject.name == "Player")
+        if (gameObject.CompareTag("Player"))
         {
-            if (collision.gameObject.name == "enemy_flame_test(Clone)" && hp > 0)
+            if (collision.gameObject.name == "Gun_flame(Clone)" && hp > 0)
             {
                 if (armor == 0)
                 {
                     hp -= 10;
+                    hp = Mathf.Clamp(hp, 0, 100);
                     hp_bar.text = "Health: " + hp;
                 }
-                else if(armor > 0)
+                else if (armor > 0)
                 {
                     armor -= 10;
+                    armor = Mathf.Clamp(armor, 0, 100);
+                    armor_bar.text = "Armor: " + armor;
+                }
+            }
+            else if(collision.gameObject.name == "Rocket(Clone)" && hp > 0)
+            {
+                if (armor == 0)
+                {
+                    hp -= 80;
+                    hp = Mathf.Clamp(hp, 0, 100);
+                    hp_bar.text = "Health: " + hp;
+                }
+                else if (armor > 0)
+                {
+                    armor -= 80;
                     armor = Mathf.Clamp(armor, 0, 100);
                     armor_bar.text = "Armor: " + armor;
                 }
