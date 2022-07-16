@@ -32,13 +32,35 @@ public class CharStats : MonoBehaviour
         timeLeftJump = timer_jump;
         timeLeftSpeed = timer_speed;
         players = GameObject.FindGameObjectsWithTag("Player");
+        if (two_players)
+        {
+            if (gameObject == players[0])
+            {
+                hp_bar = GameObject.Find("Health_0").GetComponent<Text>();
+                armor_bar = GameObject.Find("Armor_0").GetComponent<Text>();
+                ammo_bar = GameObject.Find("Ammo_0").GetComponent<Text>();
+                jump_bar = GameObject.Find("Jump_0").GetComponent<Text>();
+                speed_bar = GameObject.Find("Speed_0").GetComponent<Text>();
+            }
+            else
+            {
+                hp_bar = GameObject.Find("Health_1").GetComponent<Text>();
+                armor_bar = GameObject.Find("Armor_1").GetComponent<Text>();
+                ammo_bar = GameObject.Find("Ammo_1").GetComponent<Text>();
+                jump_bar = GameObject.Find("Jump_1").GetComponent<Text>();
+                speed_bar = GameObject.Find("Speed_1").GetComponent<Text>();
+            }
+        }
+        else
+        {
+            hp_bar = GameObject.Find("Health_0").GetComponent<Text>();
+            armor_bar = GameObject.Find("Armor_0").GetComponent<Text>();
+            ammo_bar = GameObject.Find("Ammo_0").GetComponent<Text>();
+            jump_bar = GameObject.Find("Jump_0").GetComponent<Text>();
+            speed_bar = GameObject.Find("Speed_0").GetComponent<Text>();
+        }
         audioPickUp = Resources.Load("Sounds/Action/PickUp") as AudioClip;
         Give_Id_Player(players);
-        hp_bar = GameObject.Find("health").GetComponent<Text>();
-        armor_bar = GameObject.Find("Armor").GetComponent<Text>();
-        ammo_bar = GameObject.Find("Ammo").GetComponent<Text>();
-        jump_bar = GameObject.Find("Jump").GetComponent<Text>();
-        speed_bar = GameObject.Find("Speed").GetComponent<Text>();
         audioSource = GetComponent<AudioSource>();
         hp = 10;
         armor = 0;
@@ -51,7 +73,6 @@ public class CharStats : MonoBehaviour
     {
         if (jump)
         {
-            GameObject.Find("Jump").SetActive(true);
             timeLeftJump -= Time.deltaTime;
             jump_bar.text = "Jump: " + (int)timeLeftJump;
             if (timeLeftJump < 0)
@@ -62,7 +83,6 @@ public class CharStats : MonoBehaviour
         }
         if (speed)
         {
-            GameObject.Find("Speed").SetActive(true);
             timeLeftSpeed -= Time.deltaTime;
             speed_bar.text = "Speed: " + (int)timeLeftSpeed;
             if (timeLeftSpeed < 0)
@@ -160,7 +180,7 @@ public class CharStats : MonoBehaviour
     {
         if (gameObject.CompareTag("Player"))
         {
-            if (collision.gameObject.name == "Gun_flame(Clone)" && hp > 0)
+            if (collision.gameObject.name == "Gun_flame(Clone)" && collision.gameObject.GetComponent<Disappear>().owner_id != id && hp > 0)
             {
                 if (armor == 0)
                 {
